@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,13 +28,18 @@ public class Main {
     private static JFrame frame;
     private static PanGame panGame;
     private static Hero hero;
+    private static Sorcerer1 sor1;
+    private static Sorcerer2 sor2;
     private static JLabel lblDeath, lblWin, lblTitle, lblControls, lblC1, lblC2;
     private final static JPanel cards = new JPanel(new CardLayout());
     private static JPanel panDeath, panWin, panMenu1, panMenu2, panMenu3;
     private static CardLayout cl;
     private static final JButton btnPlay = new JButton("PLAY"),
             btnInst = new JButton("HOW TO PLAY"), btnBack1 = new JButton("BACK"),
-            btnBack2 = new JButton("BACK"), btnCredits = new JButton("CREDITS");
+            btnBack2 = new JButton("BACK"), btnCredits = new JButton("CREDITS"),
+            btnRestart = new JButton("RESTART");
+    private static Clip clipForever;
+    private static AudioInputStream AISForever;
 
     //Card Layout - http://www.zentut.com/java-swing/java-swing-cardlayout/
     public static void main(String[] args) throws Exception {
@@ -41,17 +49,21 @@ public class Main {
         frame.setTitle("Roman Fury");
         frame.setIconImage(ImageIO.read(BufferedImage.class.getResourceAsStream("/Icon.png")));
         hero = new Hero();
+        sor1 = new Sorcerer1();
+        sor2 = new Sorcerer2();
         panGame = new PanGame();
         panDeath = new JPanel();
         panWin = new JPanel();
         panMenu1 = new JPanel();
         panMenu2 = new JPanel();
         panMenu3 = new JPanel();
-        panDeath.setLayout(new BorderLayout());
+        panDeath.setLayout(new GridLayout(3, 1, 0, 9));
         panWin.setLayout(new BorderLayout());
         panMenu1.setLayout(new GridLayout(4, 1, 0, 5));
         panMenu2.setLayout(new GridLayout(3, 1, 0, 9));
         panMenu3.setLayout(new GridLayout(3, 1, 0, 5));
+        AISForever = AudioSystem.getAudioInputStream(AudioSystem.class.getResource("/Forever.wav"));
+        clipForever = AudioSystem.getClip();
         Clicked click = new Clicked();
         btnPlay.addActionListener(click);
         btnPlay.setBackground(Color.yellow);
@@ -68,11 +80,15 @@ public class Main {
         btnBack2.addActionListener(click);
         btnBack2.setBackground(Color.yellow);
         btnBack2.setFont(btnBack2.getFont().deriveFont(Font.BOLD, 60.0f));
+        btnRestart.addActionListener(click);
+        btnRestart.setBackground(Color.red);
+        btnRestart.setFont(btnRestart.getFont().deriveFont(Font.BOLD, 60.0f));
         //Death Screen
         lblDeath = new JLabel("YOU HAVE DIED.");
         lblDeath.setFont(lblDeath.getFont().deriveFont(Font.BOLD, 155.0f));
         lblDeath.setForeground(Color.red);
         panDeath.add(lblDeath, BorderLayout.CENTER);
+        panDeath.add(btnRestart);
         panDeath.setBackground(Color.BLACK);
         //Win Screen
         lblWin = new JLabel("YOU HAVE DEFEATED THE HOSTIS, GLORY FOR ROME!");
@@ -89,16 +105,18 @@ public class Main {
         panMenu1.add(btnInst);
         panMenu1.add(btnCredits);
         panMenu1.setBackground(Color.red);
+        clipForever.open(AISForever);
+        clipForever.loop(Clip.LOOP_CONTINUOUSLY);
         //Controls menu
         String[] columnNames = {"KEY", "ACTION"};
         Object[][] data = {
-            {"KEYS", "ACTION"},
-            {"→", "MOVES RIGHT"},
-            {"←", "MOVES LEFT"},
-            {"C", "BLOCK"},
-            {"X", "WEAK ATTACK"},
-            {"Z", "STRONG ATTACK"},
-            {"P", "PAUSE"},
+            {"KEYS", "Action"},
+            {"→", "Move Right"},
+            {"←", "Move Left"},
+            {"C", "Block"},
+            {"X", "Weak Attack"},
+            {"Z", "Strong Attack"},
+            {"P", "Pause"},
             {"All Keys", "Hold a key if no action happens."}
         };
         lblControls = new JLabel("CONTROLS");
@@ -148,12 +166,14 @@ public class Main {
     public void Win() {
         cl.show(cards, sWin);
     }
+
     //Button listener
     private static class Clicked implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent event) {
             if (btnPlay.isFocusOwner()) {
+                clipForever.close();
                 cl.show(cards, sGame);
             } else if (btnInst.isFocusOwner()) {
                 cl.show(cards, sMenu2);
@@ -163,6 +183,9 @@ public class Main {
                 cl.show(cards, sMenu1);
             } else if (btnCredits.isFocusOwner()) {
                 cl.show(cards, sMenu3);
+            } else if (btnRestart.isFocusOwner()) {
+                cl.show(cards, sGame);
+                panGame.reset();
             }
         }
     }

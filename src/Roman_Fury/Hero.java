@@ -14,7 +14,7 @@ import javax.sound.sampled.Clip;
 public class Hero {
 
     private static int dx, nHeroX, nHeroY, nImgNum = 1, nDelay = 1, nState, nImage,
-            nHealth = 100;
+            nHealth = 10;
     public static BufferedImage BImgHero, BImgHeroPortriat;
     private final static BufferedImage[][] arBImgHero = new BufferedImage[7][7];
     public static boolean isAction, isRight = true, isMoving, isBlock, isStrong,
@@ -167,6 +167,9 @@ public class Hero {
 
     public void setState(int state) {
         nState = nImage = state;
+    }
+    public void Restart() {
+        nHealth = 100;
     }
     public void move() {
         nHeroX += dx;

@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 //This class loads all the atributes for one of the sorcerers.
+
 public class Sorcerer2 {
 
     private final int nSor2X, nSor2Y;
@@ -35,28 +36,29 @@ public class Sorcerer2 {
     public int getY() {
         return nSor2Y;
     }
-    
-    public int getHealth() {
-        return nHealth;
-    }
-    
-    public boolean getAttack() {
-        return isAttack;
-    }
+
     public BufferedImage getImage() {
         Attack();
         return BImgSor2;
     }
-    
-    public Rectangle getBounds() {
-        return new Rectangle(nSor2X-20, nSor2Y, BImgSor2.getWidth(), BImgSor2.getHeight());
+
+    public boolean getAttack() {
+        return isAttack;
     }
-    
+
+    public int getHealth() {
+        return nHealth;
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(nSor2X - 20, nSor2Y, BImgSor2.getWidth(), BImgSor2.getHeight());
+    }
+
     public void setHealth(int health) {
         nHealth -= health;
     }
 
-    public void Sor2Health(Graphics g){
+    public void Sor2Health(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g.drawImage(BImgSor2Portrait, 0, 100, null);
         recHealth = new Rectangle(50, 115, nHealth, 20);
@@ -69,7 +71,7 @@ public class Sorcerer2 {
     public void Attack() {
         nAttack++;
         isAttack = false;
-        if (nAttack > (int) (Math.random() * nAtkSpeed*2 + nAtkSpeed)) {
+        if (nAttack > (int) (Math.random() * nAtkSpeed * 2 + nAtkSpeed)) {
             nState = 2;
             nImage = 1;
             isAttack = true;
@@ -80,5 +82,9 @@ public class Sorcerer2 {
             nChange = 0;
         }
         nChange++;
+    }
+
+    public void Restart() {
+        nHealth = 50;
     }
 }

@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 //This class loads all of the attributes for the boss
+
 public class Boss {
 
     private final int nBossX, nBossY;
@@ -119,6 +120,10 @@ public class Boss {
         isBlast = blast;
     }
 
+    public void Restart() {
+        nHealth = 200;
+    }
+
     public void BossHealth(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g.drawImage(BImgBossPortrait, 0, 50, null);
@@ -137,7 +142,7 @@ public class Boss {
             g2.fill(recBeam);
             g.setColor(Color.black);
             g2.draw(recBeam);
-            if (bGrow ) {
+            if (bGrow) {
                 nBeam1--;
                 nBeam2++;
             }

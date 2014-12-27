@@ -17,6 +17,7 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.KeyStroke;
 //This is the main panel of the game
+
 public class PanGame extends JPanel implements Runnable {
 
     private int nSunX, nSunY, nChange = 0, d, c, nCloud1 = 230, nCloud2 = 400,
@@ -36,7 +37,7 @@ public class PanGame extends JPanel implements Runnable {
     private Thread thread;
     private final Clip clipBreach;
     private final AudioInputStream AISBreach;
-    private AudioInputStream AISFireball, AISShield;    
+    private AudioInputStream AISFireball, AISShield;
     private long before = 0, delay = 480;
 
     public PanGame() throws Exception {
@@ -92,6 +93,7 @@ public class PanGame extends JPanel implements Runnable {
         thread = new Thread(this);
         thread.start();
     }
+
     //Threads run more consistentantly than timers.
     @Override
     public void run() {
@@ -153,14 +155,14 @@ public class PanGame extends JPanel implements Runnable {
             for (int i = 0; i < nCloudX.length; i++) {
                 g.drawImage(cloud, nCloudX[i], nCloudY[i], null);
             }
-            sor1.Sor1Health(g);
-            sor2.Sor2Health(g);
             nSunX = 1068;
             nSunY = 55;
-            if (sor1.getHealth() >= 0) {
+            if (sor1.getHealth() > 0) {
+                sor1.Sor1Health(g);
                 g.drawImage(sor1.getImage(), sor1.getX(), sor1.getY(), this);
             }
-            if (sor2.getHealth() >= 0) {
+            if (sor2.getHealth() > 0) {
+                sor2.Sor2Health(g);
                 g.drawImage(sor2.getImage(), sor2.getX(), sor2.getY(), this);
             }
             if (sor1.getAttack()) {
@@ -226,8 +228,10 @@ public class PanGame extends JPanel implements Runnable {
         g.dispose();
         Clouds();
     }
+
     //Moves clouds
     public void Clouds() {
+        System.out.println(isCol2);
         if (d < 20) {
             c = 0;
         } else if (d > 20) {
@@ -253,6 +257,28 @@ public class PanGame extends JPanel implements Runnable {
         }
     }
 
+    public void reset() {
+        hero.Restart();
+        hero.setX(580);
+        hero.setState(1);
+        hero.setRight(true);
+        sor1.Restart();
+        sor2.Restart();
+        knight.Restart();
+        boss.Restart();
+        isSorcerer = true;
+        isKnight = isBoss = false;
+        try {
+            background = ImageIO.read(getClass().getResourceAsStream("/background1.png"));
+        } catch (IOException e) {
+            System.out.println("IOException!");
+        }
+        nCloud1 = 230;
+        nCloud2 = 400;
+        nCloud3 = 650;
+        nCloud4 = 1045;
+    }
+
     //http://zetcode.com/tutorials/javagamestutorial/collision/
     public void checkCollisionsSor() {
         Rectangle RecHero = hero.getBounds(), RecFireball1 = fireball1.getBounds(),
@@ -271,7 +297,7 @@ public class PanGame extends JPanel implements Runnable {
         }
         //checks collision of the sorcerers and hero
         if (RecHero.intersects(RecSor1)) {
-            if (hero.getRight() && sor1.getHealth() >= 0) {
+            if (hero.getRight() && sor1.getHealth() > 0) {
                 isCol1 = true;
                 if (hero.getWeak()) {
                     sor1.setHealth(10);
@@ -280,12 +306,12 @@ public class PanGame extends JPanel implements Runnable {
                     sor1.setHealth(30);
                     hero.setStrong(false);
                 }
-            } else if (!hero.getRight()) {
+            } else {
                 isCol1 = false;
             }
         }
         if (RecHero.intersects(RecSor2)) {
-            if (!hero.getRight() && sor2.getHealth() >= 0) {
+            if (!hero.getRight() && sor2.getHealth() > 0) {
                 isCol2 = true;
                 if (hero.getWeak()) {
                     sor2.setHealth(10);
@@ -294,16 +320,9 @@ public class PanGame extends JPanel implements Runnable {
                     sor2.setHealth(30);
                     hero.setStrong(false);
                 }
-            } else if (hero.getRight()) {
+            } else {
                 isCol2 = false;
             }
-        }
-        //if both fireballs collide
-        if (RecFireball1.intersects(RecFireball2)) {
-            fireball1.setVisible(false);
-            fireball1.setX(1120);
-            fireball2.setVisible(false);
-            fireball2.setX(115);
         }
         if (!RecHero.intersects(RecSor1)) {
             isCol1 = false;
@@ -347,14 +366,14 @@ public class PanGame extends JPanel implements Runnable {
                 }
                 if (hero.getWeak() || hero.getStrong() && knight.getBlock()) {
                     try {
-                         long now = System.currentTimeMillis();
-                    if (now - before > delay) {
-                        Clip clipShield = AudioSystem.getClip();
-                        AISShield = AudioSystem.getAudioInputStream(getClass().getResource("/Shield.wav"));
-                        clipShield.open(AISShield);
-                        clipShield.start();
-                    }
-                    before = now;
+                        long now = System.currentTimeMillis();
+                        if (now - before > delay) {
+                            Clip clipShield = AudioSystem.getClip();
+                            AISShield = AudioSystem.getAudioInputStream(getClass().getResource("/Shield.wav"));
+                            clipShield.open(AISShield);
+                            clipShield.start();
+                        }
+                        before = now;
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

@@ -90,6 +90,9 @@ public class Knight {
     public void setAttack(boolean b) {
         isAttack = b;
     }
+    public void Restart() {
+        nHealth = 150;
+    }
 
     public void KnightHealth(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;

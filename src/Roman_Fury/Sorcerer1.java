@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 //This class loads all the atributes for one of the sorcerers.
+
 public class Sorcerer1 {
 
     private final int nSor1X, nSor1Y;
@@ -46,26 +47,27 @@ public class Sorcerer1 {
         return isAttack;
     }
 
-    public Rectangle getBounds() {
-        return new Rectangle(nSor1X + 15, nSor1Y, BImgSor1.getWidth() - 10, BImgSor1.getHeight());
+    public int getHealth() {
+        return nHealth;
     }
 
-    public void Sor1Health(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        g.drawImage(BImgSor1Portrait, 0, 50, null);
-        recHealth = new Rectangle(50, 65, nHealth, 20);
-        g.setColor(Color.red);
-        g2.fill(recHealth);
-        g.setColor(Color.black);
-        g2.draw(recHealth);
+    public Rectangle getBounds() {
+        return new Rectangle(nSor1X + 15, nSor1Y, BImgSor1.getWidth() - 10, BImgSor1.getHeight());
     }
 
     public void setHealth(int health) {
         nHealth -= health;
     }
 
-    public int getHealth() {
-        return nHealth;
+    public void Sor1Health(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g.drawImage(BImgSor1Portrait, 0, 50, null);
+        recHealth = new Rectangle(50, 65, nHealth, 20);
+        System.out.println("nHealth is &" + nHealth);
+        g.setColor(Color.red);
+        g2.fill(recHealth);
+        g.setColor(Color.black);
+        g2.draw(recHealth);
     }
 
     public void Attack() {
@@ -83,4 +85,9 @@ public class Sorcerer1 {
         }
         nChange++;
     }
+
+    public void Restart() {
+        nHealth = 50;
+    }
+
 }
