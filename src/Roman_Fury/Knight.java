@@ -6,18 +6,21 @@ import javax.imageio.ImageIO;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 //This class loads all of the attributes for the knight
 
 public class Knight {
 
     private final int nKnightX, nKnightY;
-    private int nHealth = 150, nAttack = 0, nBlock, nState = 1, nImage = 1;
-    private static boolean isAttack = false, bHeroAtk = false, isBlock = false;
+    private int nHealth = 150, nAttack = 500, nBlock, nState = 1, nImage = 1;
+    private static boolean isAttack, bHeroAtk, isBlock;
     private BufferedImage BImgKnight;
     private final BufferedImage BImgKnightPortrait;
     private final static BufferedImage[][] arBImgKnight = new BufferedImage[3][3];
@@ -48,6 +51,10 @@ public class Knight {
 
     public int getHealth() {
         return nHealth;
+    }
+    
+    public int getState() {
+        return nState;
     }
 
     public BufferedImage getImage() {
@@ -105,8 +112,8 @@ public class Knight {
     }
 
     public void Action() {
-        if (hero.getX() > 600) {
-            if (nAttack == 650) {
+        if (hero.getX() > 850) {
+            if (nAttack == 550) {
                 nState = 2;
                 nImage = 1;
                 isAttack = true;
@@ -118,8 +125,7 @@ public class Knight {
                     AISAttack = AudioSystem.getAudioInputStream(getClass().getResource("/StrongKnight.wav"));
                     clipAttack.open(AISAttack);
                     clipAttack.start();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
                 }
             }
             nAttack++;
@@ -127,7 +133,6 @@ public class Knight {
     }
 
     public void Block() {
-
         bHeroAtk = true;
         delayTask = new DelayTask();
         tmrDelay.schedule(delayTask, 0, 2500);

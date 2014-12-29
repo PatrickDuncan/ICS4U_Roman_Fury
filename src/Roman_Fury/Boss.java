@@ -5,10 +5,13 @@ import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.io.IOException;
 import javax.sound.sampled.AudioSystem;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 //This class loads all of the attributes for the boss
 
 public class Boss {
@@ -70,8 +73,7 @@ public class Boss {
             } else {
                 clipBeam.stop();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
         }
         if (n != 0) {
             nState = nImage = 2;
@@ -171,8 +173,7 @@ public class Boss {
                 AISBeam = AudioSystem.getAudioInputStream(getClass().getResource("/Blast.wav"));
                 clipBeam.open(AISBeam);
                 clipBeam.start();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
             }
         } else {
             nState = nImage = 1;

@@ -58,12 +58,19 @@ public class Sorcerer1 {
     public void setHealth(int health) {
         nHealth -= health;
     }
+    
+    public void setAttack(int a) {
+        nAttack = a;
+    }
+    
+    public void setChange() {
+        nChange = 0;
+    }
 
     public void Sor1Health(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g.drawImage(BImgSor1Portrait, 0, 50, null);
         recHealth = new Rectangle(50, 65, nHealth, 20);
-        System.out.println("nHealth is &" + nHealth);
         g.setColor(Color.red);
         g2.fill(recHealth);
         g.setColor(Color.black);
@@ -89,5 +96,4 @@ public class Sorcerer1 {
     public void Restart() {
         nHealth = 50;
     }
-
 }

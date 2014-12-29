@@ -12,6 +12,8 @@ import java.awt.event.KeyEvent;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -38,6 +40,7 @@ public class PanGame extends JPanel implements Runnable {
     private final Clip clipBreach;
     private final AudioInputStream AISBreach;
     private AudioInputStream AISFireball, AISShield;
+    @SuppressWarnings("FieldMayBeFinal")
     private long before = 0, delay = 480;
 
     public PanGame() throws Exception {
@@ -96,6 +99,7 @@ public class PanGame extends JPanel implements Runnable {
 
     //Threads run more consistentantly than timers.
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run() {
         long beforeTime, timeDiff, sleep;
         beforeTime = System.currentTimeMillis();
@@ -183,8 +187,7 @@ public class PanGame extends JPanel implements Runnable {
                     AISFireball = AudioSystem.getAudioInputStream(getClass().getResource("/Fireball.wav"));
                     clipFireball.open(AISFireball);
                     clipFireball.start();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
                 }
             }
             checkCollisionsSor();
@@ -199,7 +202,7 @@ public class PanGame extends JPanel implements Runnable {
             knight.KnightHealth(g);
             nSunX = 600;
             nSunY = 5;
-            if (knight.getHealth() >= 0) {
+            if (knight.getHealth() > 0) {
                 g.drawImage(knight.getImage(), knight.getX(), knight.getY(), this);
             }
             checkCollisionsKnight();
@@ -220,7 +223,7 @@ public class PanGame extends JPanel implements Runnable {
             boss.BossHealth(g);
             nSunX = 50;
             nSunY = 100;
-            if (boss.getHealth() >= 0) {
+            if (boss.getHealth() > 0) {
                 g.drawImage(boss.getImage(), boss.getX(), boss.getY(), this);
             }
         }
@@ -231,7 +234,6 @@ public class PanGame extends JPanel implements Runnable {
 
     //Moves clouds
     public void Clouds() {
-        System.out.println(isCol2);
         if (d < 20) {
             c = 0;
         } else if (d > 20) {
@@ -263,11 +265,17 @@ public class PanGame extends JPanel implements Runnable {
         hero.setState(1);
         hero.setRight(true);
         sor1.Restart();
+        sor1.setAttack(1299);
+        sor1.setChange();
         sor2.Restart();
+        sor2.setAttack(500);
+        sor2.setChange();
         knight.Restart();
         boss.Restart();
+        fireball1.Restart();
+        fireball2.Restart();
         isSorcerer = true;
-        isKnight = isBoss = false;
+        isKnight = isBoss = isCol1 = isCol2 = isCol = false;
         try {
             background = ImageIO.read(getClass().getResourceAsStream("/background1.png"));
         } catch (IOException e) {
@@ -277,6 +285,7 @@ public class PanGame extends JPanel implements Runnable {
         nCloud2 = 400;
         nCloud3 = 650;
         nCloud4 = 1045;
+        nChange = 0;
     }
 
     //http://zetcode.com/tutorials/javagamestutorial/collision/
@@ -289,11 +298,13 @@ public class PanGame extends JPanel implements Runnable {
             fireball1.setVisible(false);
             fireball1.setX(1120);
             hero.setHitRight(true);
+            sor1.setAttack(1100);
         }
         if (fireball2.isVisible() && RecHero.intersects(RecFireball2)) {
             fireball2.setVisible(false);
             fireball2.setX(115);
             hero.setHitLeft(true);
+            sor2.setAttack(1100);
         }
         //checks collision of the sorcerers and hero
         if (RecHero.intersects(RecSor1)) {
@@ -355,12 +366,12 @@ public class PanGame extends JPanel implements Runnable {
         Rectangle RecHero = hero.getBounds(), RecKnight = knight.getBounds();
         //checks collision of the knight and hero
         if (RecHero.intersects(RecKnight)) {
-            if (hero.getRight() && knight.getHealth() >= 0) {
+            if (hero.getRight() && knight.getHealth() > 0) {
                 isCol = true;
-                if (hero.getWeak() && !knight.getBlock()) {
+                if (hero.getWeak() && !knight.getBlock() && knight.getState() == 1) {
                     knight.setHealth(10);
                     hero.setWeak(false);
-                } else if (hero.getStrong() && !knight.getBlock()) {
+                } else if (hero.getStrong() && !knight.getBlock() && knight.getState() == 1) {
                     knight.setHealth(30);
                     hero.setStrong(false);
                 }
@@ -374,8 +385,7 @@ public class PanGame extends JPanel implements Runnable {
                             clipShield.start();
                         }
                         before = now;
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                    } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
                     }
                 }
             } else if (!hero.getRight()) {
@@ -397,7 +407,7 @@ public class PanGame extends JPanel implements Runnable {
                 background = ImageIO.read(getClass().getResourceAsStream("/background3.png"));
                 clipBreach.open(AISBreach);
                 clipBreach.loop(Clip.LOOP_CONTINUOUSLY);
-            } catch (Exception e) {
+            } catch (IOException | LineUnavailableException e) {
                 System.out.println("Exception!");
             }
             nChange++;
@@ -416,7 +426,7 @@ public class PanGame extends JPanel implements Runnable {
         Rectangle RecHero = hero.getBounds(), RecBoss = boss.getBounds(),
                 RecBeam = boss.recBeam.getBounds();
         //checks collision of the boss and hero
-        if (RecHero.intersects(RecBoss) && boss.getHealth() >= 0) {
+        if (RecHero.intersects(RecBoss) && boss.getHealth() > 0) {
             if (hero.getRight()) {
                 isCol = true;
                 if (hero.getWeak()) {
@@ -433,7 +443,7 @@ public class PanGame extends JPanel implements Runnable {
                 hero.setBlast(true);
                 boss.setBlast(false);
             }
-        } else if (RecHero.intersects(RecBeam) && boss.getHealth() >= 0 && boss.getDelay() == 1 && hero.getX() < 619) {
+        } else if (RecHero.intersects(RecBeam) && boss.getHealth() > 0 && boss.getDelay() == 1 && hero.getX() < 619) {
             if (hero.getRight()) {
                 isCol = true;
             } else if (!hero.getRight()) {
@@ -455,13 +465,16 @@ public class PanGame extends JPanel implements Runnable {
         //You win!
         if (boss.getHealth() <= 0) {
             clipBreach.close();
+            hero.setState(1);
+            hero.noAction();
+            isCol = false;
             main.Win();
         }
     }
 
     public class KeyAction extends AbstractAction {
 
-        private String cmd;
+        private final String cmd;
 
         public KeyAction(String cmd) {
             this.cmd = cmd;

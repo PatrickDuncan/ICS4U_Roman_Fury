@@ -6,15 +6,18 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.awt.Rectangle;
 import java.awt.Graphics2D;
+import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 //This class loads all of the attributes for the hero
 public class Hero {
 
-    private static int dx, nHeroX, nHeroY, nImgNum = 1, nDelay = 1, nState, nImage,
-            nHealth = 10;
+    private static int dx, nHeroX, nHeroY, nImgNum = 1, nDelay = 1, nState, 
+            nImage, nHealth = 100;
     public static BufferedImage BImgHero, BImgHeroPortriat;
     private final static BufferedImage[][] arBImgHero = new BufferedImage[7][7];
     public static boolean isAction, isRight = true, isMoving, isBlock, isStrong,
@@ -109,6 +112,7 @@ public class Hero {
         }
         return BImgHero;
     }
+
     //I have so many ifs because I didn't to change the bounds of the hero to fit
     //the current image better.
     public Rectangle getBounds() {
@@ -168,9 +172,17 @@ public class Hero {
     public void setState(int state) {
         nState = nImage = state;
     }
+    
+    public void noAction() {
+        isAction = false;
+    }
+
     public void Restart() {
         nHealth = 100;
+        dx=0;
+        isMoving = false;  
     }
+
     public void move() {
         nHeroX += dx;
     }
@@ -222,8 +234,7 @@ public class Hero {
                 AISHurt = AudioSystem.getAudioInputStream(getClass().getResource("/Hurt.wav"));
                 clipHurt.open(AISHurt);
                 clipHurt.start();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
             }
         } else if (isBlock && isBeam || isBlast || isHitLeft || isHitRight || isHit) {
             try {
@@ -231,8 +242,7 @@ public class Hero {
                 AISShield = AudioSystem.getAudioInputStream(getClass().getResource("/Shield.wav"));
                 clipShield.open(AISShield);
                 clipShield.start();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
             }
         }
         isHitRight = isHitLeft = isHit = isBeam = isBlast = false;
@@ -262,6 +272,7 @@ public class Hero {
         }
         Animation();
     }
+
     //This pushes back the hero when certain enemies do certain attacks.
     private void Push() {
         if (isPush && nHeroX > 910) {
@@ -270,6 +281,7 @@ public class Hero {
             isPush = false;
         }
         if (isPush2 && nHeroX > 620) {
+
             nHeroX -= 1;
         } else {
             isPush2 = false;
@@ -279,88 +291,90 @@ public class Hero {
     //http://zetcode.com/tutorials/javagamestutorial/movingsprites/
     public void keyPressed(String s) {
         if (!isAction) {
-            if (s.equals("left")) {
-                dx = -1;
-                if (nHeroX < -10) {
-                    dx = 0;
-                }
-                isRight = false;
-                isMoving = true;
-            } else if (s.equals("right")) {
-                dx = 1;
-                if (nHeroX > 1200) {
-                    dx = 0;
-                }
-                isRight = true;
-                isMoving = true;
-
-            } else if (s.equals("C")) {
-                long timeNow = System.currentTimeMillis();
-                if (timeNow - lastBlockTime < CDelay) {
-                    return;
-                }
-                dx = 0;
-                isAction = true;
-                isMoving = false;
-                isBlock = true;
-                nImage = 1;
-                lastBlockTime = timeNow;
-            } else if (s.equals("X")) {
-                long timeNow = System.currentTimeMillis();
-                if (timeNow - lastAtkTime < XDelay) {
-                    return;
-                }
-                try {
-                    Clip clipWeak = AudioSystem.getClip();
-                    AISWeak = AudioSystem.getAudioInputStream(getClass().getResource("/Weak.wav"));
-                    clipWeak.open(AISWeak);
-                    clipWeak.start();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                dx = 0;
-                isAction = true;
-                isMoving = false;
-                isWeak = true;
-                nImage = 2;
-                lastAtkTime = timeNow;
-            } else if (s.equals("Z")) {
-                long timeNow = System.currentTimeMillis();
-                if (timeNow - lastAtkTime < ZDelay) {
-                    return;
-                }
-                try {
-                    Clip clipStrong = AudioSystem.getClip();
-                    AISStrong = AudioSystem.getAudioInputStream(getClass().getResource("/Strong.wav"));
-                    clipStrong.open(AISStrong);
-                    clipStrong.start();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                dx = 0;
-                isAction = true;
-                isMoving = false;
-                isStrong = true;
-                nImage = 3;
-                lastAtkTime = timeNow;
-            } else if (s.equals("P")) {
-                if (!pause) {
-                    pause = true;
-                } else {
-                    pause = false;
-                }
-                try {
-                    Clip clipPause = AudioSystem.getClip();
-                    if (pause) {
-                        AISPause = AudioSystem.getAudioInputStream(getClass().getResource("/Pause.wav"));
-                    } else {
-                        AISPause = AudioSystem.getAudioInputStream(getClass().getResource("/Unpause.wav"));
+            switch (s) {
+                case "left":
+                    dx = -1;
+                    if (nHeroX < -10) {
+                        dx = 0;
                     }
-                    clipPause.open(AISPause);
-                    clipPause.start();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                    isRight = false;
+                    isMoving = true;
+                    break;
+                case "right":
+                    dx = 1;
+                    if (nHeroX > 1200) {
+                        dx = 0;
+                    }
+                    isRight = true;
+                    isMoving = true;
+                    break;
+                case "C": {
+                    long timeNow = System.currentTimeMillis();
+                    if (timeNow - lastBlockTime < CDelay) {
+                        return;
+                    }
+                    dx = 0;
+                    isAction = true;
+                    isMoving = false;
+                    isBlock = true;
+                    nImage = 1;
+                    lastBlockTime = timeNow;
+                    break;
                 }
+                case "X": {
+                    long timeNow = System.currentTimeMillis();
+                    if (timeNow - lastAtkTime < XDelay) {
+                        return;
+                    }
+                    try {
+                        Clip clipWeak = AudioSystem.getClip();
+                        AISWeak = AudioSystem.getAudioInputStream(getClass().getResource("/Weak.wav"));
+                        clipWeak.open(AISWeak);
+                        clipWeak.start();
+                    } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+                    }
+                    dx = 0;
+                    isAction = true;
+                    isMoving = false;
+                    isWeak = true;
+                    nImage = 2;
+                    lastAtkTime = timeNow;
+                    break;
+                }
+                case "Z": {
+                    long timeNow = System.currentTimeMillis();
+                    if (timeNow - lastAtkTime < ZDelay) {
+                        return;
+                    }
+                    try {
+                        Clip clipStrong = AudioSystem.getClip();
+                        AISStrong = AudioSystem.getAudioInputStream(getClass().getResource("/Strong.wav"));
+                        clipStrong.open(AISStrong);
+                        clipStrong.start();
+                    } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+                    }
+                    dx = 0;
+                    isAction = true;
+                    isMoving = false;
+                    isStrong = true;
+                    nImage = 3;
+                    lastAtkTime = timeNow;
+                    break;
+                }
+                case "P":
+                    pause = !pause;
+                    try {
+                        Clip clipPause = AudioSystem.getClip();
+                        if (pause) {
+                            AISPause = AudioSystem.getAudioInputStream(getClass().getResource("/Pause.wav"));
+                        } else {
+                            AISPause = AudioSystem.getAudioInputStream(getClass().getResource("/Unpause.wav"));
+                        }
+                        clipPause.open(AISPause);
+                        clipPause.start();
+                    } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+                    }
+                    break;
             }
         }
     }

@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 //This class loads all of the attributes for one of the fireballs
+
 public class Fireball1 {
 
     private int nFireball1X;
@@ -37,20 +38,24 @@ public class Fireball1 {
         }
         return BImgFireball1;
     }
-    
+
     public void setVisible(boolean vis) {
         visible = vis;
     }
-    
-    public boolean isVisible(){
-        return visible;
-    }
-    
-    public void setX(int x){
+
+    public void setX(int x) {
         nFireball1X = x;
     }
-    
+
+    public boolean isVisible() {
+        return visible;
+    }
+
     public void move() {
         nFireball1X -= 1;
+    }
+
+    public void Restart() {
+        nFireball1X = 1120;
     }
 }

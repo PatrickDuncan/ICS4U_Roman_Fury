@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 public class Sorcerer2 {
 
     private final int nSor2X, nSor2Y;
-    private int nAttack = 0, nHealth = 50, nChange = 0, nState = 1, nImage = 1;
+    private int nAttack = 900, nHealth = 50, nChange = 0, nState = 1, nImage = 1;
     private final int nAtkSpeed = 1300;
     private static boolean isAttack = false;
     private BufferedImage BImgSor2;
@@ -39,6 +39,7 @@ public class Sorcerer2 {
 
     public BufferedImage getImage() {
         Attack();
+        BImgSor2 = arBImgSor[nState][nImage];
         return BImgSor2;
     }
 
@@ -56,6 +57,14 @@ public class Sorcerer2 {
 
     public void setHealth(int health) {
         nHealth -= health;
+    }
+    
+    public void setAttack(int a) {
+        nAttack = a;
+    }
+    
+    public void setChange() {
+        nChange = 0;
     }
 
     public void Sor2Health(Graphics g) {

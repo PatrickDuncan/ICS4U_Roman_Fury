@@ -42,15 +42,19 @@ public class Fireball2 {
         visible = vis;
     }
     
-    public boolean isVisible(){
-        return visible;
-    }
-    
     public void setX(int x){
         nFireball2X = x;
+    }
+    
+    public boolean isVisible(){
+        return visible;
     }
         
     public void move() {
         nFireball2X += 1;
+    }
+    
+    public void Restart() {
+        nFireball2X = 115;
     }
 }
