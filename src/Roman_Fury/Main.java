@@ -31,7 +31,7 @@ public class Main {
     private static JLabel lblDeath, lblWin, lblTitle, lblControls, lblC1, lblC2,
             lblStory1, lblStory2;
     private final static JPanel cards = new JPanel(new CardLayout());
-    private static JPanel panDeath, panWin, panMenu1, panMenu2, 
+    private static JPanel panDeath, panWin, panMenu1, panMenu2,
             panMenu3, panStory;
     private static CardLayout cl;
     private static final JButton btnPlay = new JButton("CONTINUE"),
@@ -110,13 +110,13 @@ public class Main {
         lblTitle.setFont((lblTitle.getFont().deriveFont(Font.BOLD, 186.0f)));
         lblTitle.setForeground(Color.yellow);
         //Story Screen
-        lblStory1 = new JLabel("You are a Roman general that has lost his legion"
+        lblStory1 = new JLabel("You are a Roman general who has lost his legion"
                 + " to a wingless dragon and it's minions.");
         lblStory2 = new JLabel("You have discovered where the dragon resides and"
                 + " it is up to you to avenge your fallen soldiers.");
         lblStory1.setFont(lblStory1.getFont().deriveFont(Font.BOLD, 31f));
         lblStory2.setFont(lblStory2.getFont().deriveFont(Font.BOLD, 27f));
-        lblStory1.setForeground(Color.yellow); 
+        lblStory1.setForeground(Color.yellow);
         lblStory2.setForeground(Color.yellow);
         panStory.setBackground(Color.red);
         //Starting menu
@@ -187,20 +187,23 @@ public class Main {
     public void Win() {
         cl.show(cards, sWin);
     }
+    
+    public void ReBreach() {
+        panGame.ReBreach();
+    }
 
     //Button listener
     private static class Clicked implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            if (btnStory.isFocusOwner()){
+            if (btnStory.isFocusOwner()) {
                 panStory.add(lblTitle);
-        panStory.add(lblStory1);
-        panStory.add(lblStory2);
-        panStory.add(btnPlay);
+                panStory.add(lblStory1);
+                panStory.add(lblStory2);
+                panStory.add(btnPlay);
                 cl.show(cards, sStory);
-            }
-            else if (btnPlay.isFocusOwner()) {
+            } else if (btnPlay.isFocusOwner()) {
                 clipForever.close();
                 cl.show(cards, sGame);
             } else if (btnInst.isFocusOwner()) {
@@ -212,7 +215,7 @@ public class Main {
             } else if (btnCredits.isFocusOwner()) {
                 cl.show(cards, sMenu3);
             } else if (btnRestart1.isFocusOwner() || btnRestart2.isFocusOwner()) {
-                panGame.reset(); 
+                panGame.reset();
                 cl.show(cards, sGame);
             }
         }

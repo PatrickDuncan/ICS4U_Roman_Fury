@@ -4,8 +4,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-//This class loads all of the attributes for one of the fireballs
 
+//This class loads all of the attributes for one of the fireballs
 public class Fireball1 {
 
     private int nFireball1X;

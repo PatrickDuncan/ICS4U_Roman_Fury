@@ -16,7 +16,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 //This class loads all of the attributes for the hero
 public class Hero {
 
-    private static int dx, nHeroX, nHeroY, nImgNum = 1, nDelay = 1, nState, 
+    private static int dx, nHeroX, nHeroY, nImgNum = 1, nDelay = 1, nState,
             nImage, nHealth = 100;
     public static BufferedImage BImgHero, BImgHeroPortriat;
     private final static BufferedImage[][] arBImgHero = new BufferedImage[7][7];
@@ -172,15 +172,15 @@ public class Hero {
     public void setState(int state) {
         nState = nImage = state;
     }
-    
+
     public void noAction() {
         isAction = false;
     }
 
     public void Restart() {
         nHealth = 100;
-        dx=0;
-        isMoving = false;  
+        dx = 0;
+        isMoving = false;
     }
 
     public void move() {
@@ -281,7 +281,6 @@ public class Hero {
             isPush = false;
         }
         if (isPush2 && nHeroX > 620) {
-
             nHeroX -= 1;
         } else {
             isPush2 = false;
@@ -369,6 +368,7 @@ public class Hero {
                             AISPause = AudioSystem.getAudioInputStream(getClass().getResource("/Pause.wav"));
                         } else {
                             AISPause = AudioSystem.getAudioInputStream(getClass().getResource("/Unpause.wav"));
+                            main.ReBreach();
                         }
                         clipPause.open(AISPause);
                         clipPause.start();
@@ -380,7 +380,6 @@ public class Hero {
     }
 
     public void keyReleased(String s) {
-        //int key = e.getKeyCode();
         if (s.equals("rlright") || s.equals("rlleft") && !isAction) {
             dx = 0;
             isMoving = false;

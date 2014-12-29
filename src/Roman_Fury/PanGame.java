@@ -9,6 +9,8 @@ import java.io.IOException;
 import javax.swing.JPanel;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
@@ -37,9 +39,8 @@ public class PanGame extends JPanel implements Runnable {
     private final Main main = new Main();
     private final int DELAY = 9;
     private Thread thread;
-    private final Clip clipBreach;
-    private final AudioInputStream AISBreach;
-    private AudioInputStream AISFireball, AISShield;
+    private Clip clipBreach;
+    private AudioInputStream AISBreach, AISFireball, AISShield;
     @SuppressWarnings("FieldMayBeFinal")
     private long before = 0, delay = 480;
 
@@ -106,7 +107,7 @@ public class PanGame extends JPanel implements Runnable {
         while (true) {
             if (!hero.getPause()) {
                 if (!hero.getAction() && !isCol2 && !isCol1 && !isCol) {
-                    if (isBoss & hero.getX() > 750) {//Quick fix for collision not working well on boss.
+                    if (isBoss & hero.getX() > 750) {
                         hero.setX(hero.getX() - 1);
                     }
                     hero.move();
@@ -219,13 +220,13 @@ public class PanGame extends JPanel implements Runnable {
             } else if (hero.getX() > 700) {
                 boss.Blast();
             }
-            checkCollisionsBoss();
             boss.BossHealth(g);
             nSunX = 50;
             nSunY = 100;
             if (boss.getHealth() > 0) {
                 g.drawImage(boss.getImage(), boss.getX(), boss.getY(), this);
             }
+            checkCollisionsBoss();
         }
         Toolkit.getDefaultToolkit().sync();
         g.dispose();
@@ -286,6 +287,16 @@ public class PanGame extends JPanel implements Runnable {
         nCloud3 = 650;
         nCloud4 = 1045;
         nChange = 0;
+    }
+
+    public void ReBreach() {
+        try {
+            AISBreach = AudioSystem.getAudioInputStream(getClass().getResource("/TheBreach.wav"));
+            clipBreach = AudioSystem.getClip();
+            clipBreach.open(AISBreach);
+            clipBreach.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+        }
     }
 
     //http://zetcode.com/tutorials/javagamestutorial/collision/
@@ -405,9 +416,8 @@ public class PanGame extends JPanel implements Runnable {
             isBoss = true;
             try {
                 background = ImageIO.read(getClass().getResourceAsStream("/background3.png"));
-                clipBreach.open(AISBreach);
-                clipBreach.loop(Clip.LOOP_CONTINUOUSLY);
-            } catch (IOException | LineUnavailableException e) {
+                ReBreach();
+            } catch (IOException e) {
                 System.out.println("Exception!");
             }
             nChange++;

@@ -12,14 +12,14 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-//This class loads all of the attributes for the boss
 
+//This class loads all of the attributes for the boss
 public class Boss {
 
     private final int nBossX, nBossY;
-    private int nHealth = 200, nBeam1 = 860, nBeam2 = 0, nState, nImage, nVisible,
-            nDelay, nBlast, n;
-    private static boolean isBeam = true, bGrow = true, isBlast;
+    private int nHealth = 200, nBeam1 = 860, nBeam2 = 0, nState, nImage,
+            nVisible, nDelay, nBlast, n;
+    private static boolean isBeam = true, isGrow = true, isBlast;
     private BufferedImage BImgBoss;
     private final BufferedImage BImgBossPortrait;
     private final static BufferedImage[][] arBImgBoss = new BufferedImage[3][3];
@@ -110,12 +110,12 @@ public class Boss {
         nHealth -= health;
     }
 
-    public void setBeam(boolean b) {
-        isBeam = b;
+    public void setBeam(boolean beam) {
+        isBeam = beam;
     }
 
     public void setGrow(boolean grow) {
-        bGrow = grow;
+        isGrow = grow;
     }
 
     public void setBlast(boolean blast) {
@@ -124,6 +124,9 @@ public class Boss {
 
     public void Restart() {
         nHealth = 200;
+        nBeam1 = 860;
+        nBeam2 = 0;
+        isGrow = isBeam = true;
     }
 
     public void BossHealth(Graphics g) {
@@ -144,7 +147,7 @@ public class Boss {
             g2.fill(recBeam);
             g.setColor(Color.black);
             g2.draw(recBeam);
-            if (bGrow) {
+            if (isGrow) {
                 nBeam1--;
                 nBeam2++;
             }

@@ -14,13 +14,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-//This class loads all of the attributes for the knight
 
+//This class loads all of the attributes for the knight
 public class Knight {
 
     private final int nKnightX, nKnightY;
-    private int nHealth = 150, nAttack = 500, nBlock, nState = 1, nImage = 1;
-    private static boolean isAttack, bHeroAtk, isBlock;
+    private int nHealth = 15, nAttack = 500, nBlock, nState = 1, nImage = 1;
+    private static boolean isAttack, isHeroAtk, isBlock;
     private BufferedImage BImgKnight;
     private final BufferedImage BImgKnightPortrait;
     private final static BufferedImage[][] arBImgKnight = new BufferedImage[3][3];
@@ -52,14 +52,14 @@ public class Knight {
     public int getHealth() {
         return nHealth;
     }
-    
+
     public int getState() {
         return nState;
     }
 
     public BufferedImage getImage() {
         Action();
-        if (bHeroAtk) {
+        if (isHeroAtk) {
             nBlock++;
             if (nBlock == 30) {
                 nBlock = 0;
@@ -94,11 +94,13 @@ public class Knight {
         Block();
     }
 
-    public void setAttack(boolean b) {
-        isAttack = b;
+    public void setAttack(boolean bool) {
+        isAttack = bool;
     }
+
     public void Restart() {
         nHealth = 150;
+        nAttack = 500;
     }
 
     public void KnightHealth(Graphics g) {
@@ -133,7 +135,7 @@ public class Knight {
     }
 
     public void Block() {
-        bHeroAtk = true;
+        isHeroAtk = true;
         delayTask = new DelayTask();
         tmrDelay.schedule(delayTask, 0, 2500);
     }
@@ -148,7 +150,7 @@ public class Knight {
             nTimes++;
             if (nTimes == 2) {
                 nState = nImage = 1;
-                isAttack = isBlock = bHeroAtk = false;
+                isAttack = isBlock = isHeroAtk = false;
                 hero.setPush(false);
             }
         }

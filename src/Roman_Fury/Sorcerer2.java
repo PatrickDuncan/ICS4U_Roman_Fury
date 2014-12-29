@@ -12,9 +12,9 @@ import javax.imageio.ImageIO;
 public class Sorcerer2 {
 
     private final int nSor2X, nSor2Y;
-    private int nAttack = 900, nHealth = 50, nChange = 0, nState = 1, nImage = 1;
+    private int nAttack = 900, nHealth = 5, nChange = 0, nState = 1, nImage = 1;
     private final int nAtkSpeed = 1300;
-    private static boolean isAttack = false;
+    private static boolean isAttack;
     private BufferedImage BImgSor2;
     private final BufferedImage BImgSor2Portrait;
     private final static BufferedImage[][] arBImgSor = new BufferedImage[3][2];
@@ -59,8 +59,8 @@ public class Sorcerer2 {
         nHealth -= health;
     }
     
-    public void setAttack(int a) {
-        nAttack = a;
+    public void setAttack(int num) {
+        nAttack = num;
     }
     
     public void setChange() {
@@ -95,5 +95,8 @@ public class Sorcerer2 {
 
     public void Restart() {
         nHealth = 50;
+        nChange = 0;
+        nState = nImage = 1;
+        isAttack = false;
     }
 }
