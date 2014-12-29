@@ -19,7 +19,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class Knight {
 
     private final int nKnightX, nKnightY;
-    private int nHealth = 15, nAttack = 500, nBlock, nState = 1, nImage = 1;
+    private int nHealth = 150, nAttack = 500, nBlock, nState = 1, nImage = 1;
     private static boolean isAttack, isHeroAtk, isBlock;
     private BufferedImage BImgKnight;
     private final BufferedImage BImgKnightPortrait;

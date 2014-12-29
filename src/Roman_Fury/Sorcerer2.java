@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 public class Sorcerer2 {
 
     private final int nSor2X, nSor2Y;
-    private int nAttack = 900, nHealth = 5, nChange = 0, nState = 1, nImage = 1;
+    private int nAttack = 900, nHealth = 50, nChange = 0, nState = 1, nImage = 1;
     private final int nAtkSpeed = 1300;
     private static boolean isAttack;
     private BufferedImage BImgSor2;
