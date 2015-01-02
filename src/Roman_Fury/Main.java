@@ -114,7 +114,7 @@ public class Main {
                 + " to a wingless dragon and it's minions.");
         lblStory2 = new JLabel("You have discovered where the dragon resides and"
                 + " it is up to you to avenge your fallen soldiers.");
-        lblStory1.setFont(lblStory1.getFont().deriveFont(Font.BOLD, 31f));
+        lblStory1.setFont(lblStory1.getFont().deriveFont(Font.BOLD, 30f));
         lblStory2.setFont(lblStory2.getFont().deriveFont(Font.BOLD, 27f));
         lblStory1.setForeground(Color.yellow);
         lblStory2.setForeground(Color.yellow);
