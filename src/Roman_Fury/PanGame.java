@@ -22,7 +22,7 @@ import javax.swing.InputMap;
 import javax.swing.KeyStroke;
 //This is the main panel of the game
 
-public class PanGame extends JPanel implements Runnable {
+public final class PanGame extends JPanel implements Runnable {
 
     private int nSunX, nSunY, nChange = 0, d, c, nCloud1 = 230, nCloud2 = 400,
             nCloud3 = 650, nCloud4 = 1045;
@@ -48,6 +48,25 @@ public class PanGame extends JPanel implements Runnable {
         //KeyBindings: http://stackoverflow.com/questions/15753551/java-keybindings-how-does-it-work
         //I used KeyBindings instead of KeyEvents because the game loses focus when the
         //start button is pressed with the latter.
+        keySetup();
+        setFocusable(true);
+        setDoubleBuffered(true);
+        background = ImageIO.read(getClass().getResourceAsStream("/background1.png"));
+        sun = ImageIO.read(getClass().getResourceAsStream("/sun.png"));
+        cloud = ImageIO.read(getClass().getResourceAsStream("/cloud.png"));
+        pause = ImageIO.read(getClass().getResourceAsStream("/pause.png"));
+        AISBreach = AudioSystem.getAudioInputStream(getClass().getResource("/TheBreach.wav"));
+        clipBreach = AudioSystem.getClip();
+        hero = new Hero();
+        sor1 = new Sorcerer1();
+        sor2 = new Sorcerer2();
+        fireball1 = new Fireball1();
+        fireball2 = new Fireball2();
+        knight = new Knight();
+        boss = new Boss();
+    }
+    
+    public void keySetup() {
         InputMap im = this.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = this.getActionMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "RightArrow");
@@ -74,21 +93,6 @@ public class PanGame extends JPanel implements Runnable {
         am.put("rlZ", new KeyAction("rlZ"));
         am.put("P", new KeyAction("P"));
         am.put("rlP", new KeyAction("rlP"));
-        setFocusable(true);
-        setDoubleBuffered(true);
-        background = ImageIO.read(getClass().getResourceAsStream("/background1.png"));
-        sun = ImageIO.read(getClass().getResourceAsStream("/sun.png"));
-        cloud = ImageIO.read(getClass().getResourceAsStream("/cloud.png"));
-        pause = ImageIO.read(getClass().getResourceAsStream("/pause.png"));
-        AISBreach = AudioSystem.getAudioInputStream(getClass().getResource("/TheBreach.wav"));
-        clipBreach = AudioSystem.getClip();
-        hero = new Hero();
-        sor1 = new Sorcerer1();
-        sor2 = new Sorcerer2();
-        fireball1 = new Fireball1();
-        fireball2 = new Fireball2();
-        knight = new Knight();
-        boss = new Boss();
     }
 
     @Override

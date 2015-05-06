@@ -62,11 +62,30 @@ public class Main {
         panMenu1.setLayout(new GridLayout(4, 1, 0, 5));
         panMenu2.setLayout(new GridLayout(3, 1, 0, 9));
         panMenu3.setLayout(new GridLayout(3, 1, 0, 5));
-        panStory.setLayout(new GridLayout(4, 1, 0, 9));
-        AISForever = AudioSystem.getAudioInputStream(AudioSystem.class.getResource("/Forever.wav"));
-        clipForever = AudioSystem.getClip();
+        panStory.setLayout(new GridLayout(4, 1, 0, 9));        
+        buttonSetup();
+        deathScreen();
+        winScreen();
+        storyScreen();
+        startingScreen();
+        controlsScreen();
+        creditsScreen();
+        //adds them all to the cards panel for the cardlayout
+        cards.add(sMenu1, panMenu1);
+        cards.add(sStory, panStory);
+        cards.add(sMenu2, panMenu2);
+        cards.add(sMenu3, panMenu3);
+        cards.add(sGame, panGame);
+        cards.add(sDeath, panDeath);
+        cards.add(sWin, panWin);
+        frame.add(cards);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        cl = (CardLayout) (cards.getLayout());
+    }
+    
+    public static void buttonSetup() {
         Clicked click = new Clicked();
-        //Buttons
         btnStory.addActionListener(click);
         btnStory.setBackground(Color.yellow);
         btnStory.setFont(btnStory.getFont().deriveFont(Font.BOLD, 60.0f));
@@ -92,14 +111,18 @@ public class Main {
         btnRestart2.setFont(btnRestart2.getFont().deriveFont(Font.BOLD, 60.0f));
         btnRestart2.setBackground(Color.yellow);
         btnRestart2.setForeground(Color.red);
-        //Death Screen
+    }
+    
+    public static void deathScreen() {
         lblDeath = new JLabel("YOU HAVE DIED.");
         lblDeath.setFont(lblDeath.getFont().deriveFont(Font.BOLD, 155.0f));
         lblDeath.setForeground(Color.red);
         panDeath.add(lblDeath, BorderLayout.CENTER);
         panDeath.add(btnRestart1);
         panDeath.setBackground(Color.BLACK);
-        //Win Screen
+    }
+    
+    public static void winScreen() {
         lblWin = new JLabel("YOU HAVE DEFEATED THE HOSTIS, GLORY FOR ROME!");
         lblWin.setFont(lblWin.getFont().deriveFont(Font.BOLD, 46.2f));
         lblWin.setForeground(Color.yellow);
@@ -109,8 +132,10 @@ public class Main {
         lblTitle = new JLabel("ROMAN FURY");
         lblTitle.setFont((lblTitle.getFont().deriveFont(Font.BOLD, 186.0f)));
         lblTitle.setForeground(Color.yellow);
-        //Story Screen
-        lblStory1 = new JLabel("You are a Roman general who has lost his legion"
+    }
+    
+    public static void storyScreen() {
+         lblStory1 = new JLabel("You are a Roman general who has lost his legion"
                 + " to a wingless dragon and it's minions.");
         lblStory2 = new JLabel("You have discovered where the dragon resides and"
                 + " it is up to you to avenge your fallen soldiers.");
@@ -119,7 +144,11 @@ public class Main {
         lblStory1.setForeground(Color.yellow);
         lblStory2.setForeground(Color.yellow);
         panStory.setBackground(Color.red);
-        //Starting menu
+    }
+    
+    public static void startingScreen() throws Exception {
+        AISForever = AudioSystem.getAudioInputStream(AudioSystem.class.getResource("/Forever.wav"));
+        clipForever = AudioSystem.getClip();
         panMenu1.add(lblTitle);
         panMenu1.add(btnStory);
         panMenu1.add(btnInst);
@@ -127,7 +156,9 @@ public class Main {
         panMenu1.setBackground(Color.red);
         clipForever.open(AISForever);
         clipForever.loop(Clip.LOOP_CONTINUOUSLY);
-        //Controls menu
+    }
+    
+    public static void controlsScreen() {
         String[] columnNames = {"KEY", "ACTION"};
         Object[][] data = {
             {"KEY", "Action"},
@@ -153,7 +184,9 @@ public class Main {
         panMenu2.add(table);
         panMenu2.add(btnBack1);
         panMenu2.setBackground(Color.red);
-        //Credits menu
+    }
+    
+    public static void creditsScreen() {
         lblC1 = new JLabel("Code and Art: Patrick Duncan");
         lblC2 = new JLabel("Music from Rome Total War, Pacific Rim and The Legend of Zelda: Ocarina of Time");
         lblC1.setFont((lblDeath.getFont().deriveFont(Font.BOLD, 89.0f)));
@@ -164,18 +197,6 @@ public class Main {
         panMenu3.add(lblC2);
         panMenu3.add(btnBack2);
         panMenu3.setBackground(Color.red);
-        //adds them all to the cards panel for the cardlayout
-        cards.add(sMenu1, panMenu1);
-        cards.add(sStory, panStory);
-        cards.add(sMenu2, panMenu2);
-        cards.add(sMenu3, panMenu3);
-        cards.add(sGame, panGame);
-        cards.add(sDeath, panDeath);
-        cards.add(sWin, panWin);
-        frame.add(cards);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        cl = (CardLayout) (cards.getLayout());
     }
 
     public void Death() {
