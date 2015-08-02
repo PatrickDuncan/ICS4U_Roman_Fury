@@ -16,17 +16,16 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 //This class loads all of the attributes for the hero
 public class Hero {
 
-    private static int dx, nHeroX, nHeroY, nImgNum = 1, nDelay = 1, nState,
-            nImage, nHealth = 100;
-    public static BufferedImage BImgHero, BImgHeroPortriat;
-    private final static BufferedImage[][] arBImgHero = new BufferedImage[7][7];
-    public static boolean isAction, isRight = true, isMoving, isBlock, isStrong,
-            isWeak, pause, isHitRight, isHitLeft, isHit, isPush, isPush2, isBeam,
-            isBlast;
+    private static int dX, positionX, nImgNum = 1, nDelay = 1, nState, nImage, nHealth = 100;
+    private static final int POSITIONY = 505;
+    public static BufferedImage bImage, portrait;
+    private final static BufferedImage[][] imageArray = new BufferedImage[7][7];
+    public static boolean isAction, isRight = true, isMoving, isBlock, isStrong, isWeak, 
+            pause, isHitRight, isHitLeft, isHit, isPush, isPush2, isBeam,isBlast;
     private Rectangle recHealth;
     private final Main main = new Main();
     private long lastAtkTime, lastBlockTime;
-    private final long ZDelay = 1500, XDelay = 600, CDelay = 500;
+    private final long ZDELAY = 1500, XDELAY = 600, CDELAY = 500;
     private AudioInputStream AISHurt, AISPause, AISStrong, AISWeak, AISShield;
 
     public Hero() throws Exception {
@@ -34,31 +33,30 @@ public class Hero {
         //1 - right at rest, 2 left at rest, 3 right moving, 4 left moving,
         //5 action right, 6 action left
         nState = nImage = 1;
-        arBImgHero[1][1] = ImageIO.read(getClass().getResourceAsStream("/heroright.png"));
-        arBImgHero[2][1] = ImageIO.read(getClass().getResourceAsStream("/heroleft.png"));
-        for (int i = 1; i < arBImgHero.length; i++) {
-            arBImgHero[3][i] = ImageIO.read(getClass().getResourceAsStream("/herorightwalk" + i + ".png"));
-            arBImgHero[4][i] = ImageIO.read(getClass().getResourceAsStream("/heroleftwalk" + i + ".png"));
+        imageArray[1][1] = ImageIO.read(getClass().getResourceAsStream("/heroright.png"));
+        imageArray[2][1] = ImageIO.read(getClass().getResourceAsStream("/heroleft.png"));
+        for (int i = 1; i < imageArray.length; i++) {
+            imageArray[3][i] = ImageIO.read(getClass().getResourceAsStream("/herorightwalk" + i + ".png"));
+            imageArray[4][i] = ImageIO.read(getClass().getResourceAsStream("/heroleftwalk" + i + ".png"));
         }
         for (int i = 1; i < 4; i++) {
-            arBImgHero[5][i] = ImageIO.read(getClass().getResourceAsStream("/herorightaction" + i + ".png"));
-            arBImgHero[6][i] = ImageIO.read(getClass().getResourceAsStream("/heroleftaction" + i + ".png"));
+            imageArray[5][i] = ImageIO.read(getClass().getResourceAsStream("/herorightaction" + i + ".png"));
+            imageArray[6][i] = ImageIO.read(getClass().getResourceAsStream("/heroleftaction" + i + ".png"));
         }
-        BImgHeroPortriat = ImageIO.read(getClass().getResourceAsStream("/heroportrait.png"));
+        portrait = ImageIO.read(getClass().getResourceAsStream("/heroportrait.png"));
         isHitRight = isHitLeft = false;
         AISHurt = AudioSystem.getAudioInputStream(getClass().getResource("/Hurt.wav"));
         lastAtkTime = lastBlockTime = System.currentTimeMillis();
-        nHeroX = 580;
-        nHeroY = 505;
+        positionX = 580;
     }
 
     public int getX() {
         Push();
-        return nHeroX;
+        return positionX;
     }
 
     public int getY() {
-        return nHeroY;
+        return POSITIONY;
     }
 
     public int getHealth() {
@@ -106,31 +104,31 @@ public class Hero {
         }
         main.Death();
         if (isRight) {
-            BImgHero = arBImgHero[nState][nImage];
+            bImage = imageArray[nState][nImage];
         } else {
-            BImgHero = arBImgHero[nState + 1][nImage];
+            bImage = imageArray[nState + 1][nImage];
         }
-        return BImgHero;
+        return bImage;
     }
 
     //I have so many ifs because I didn't to change the bounds of the hero to fit
     //the current image better.
     public Rectangle getBounds() {
         if (isRight && !isAction) {
-            return new Rectangle(nHeroX + 28, nHeroY, BImgHero.getWidth() - 70, BImgHero.getHeight());
+            return new Rectangle(positionX + 28, POSITIONY, bImage.getWidth() - 70, bImage.getHeight());
         } else if (!isRight && !isAction) {
-            return new Rectangle(nHeroX + 42, nHeroY, BImgHero.getWidth() - 73, BImgHero.getHeight());
+            return new Rectangle(positionX + 42, POSITIONY, bImage.getWidth() - 73, bImage.getHeight());
         } else if (isRight && isBlock) {
-            return new Rectangle(nHeroX + 35, nHeroY, BImgHero.getWidth() - 59, BImgHero.getHeight());
+            return new Rectangle(positionX + 35, POSITIONY, bImage.getWidth() - 59, bImage.getHeight());
         } else if (!isRight && isBlock) {
-            return new Rectangle(nHeroX + 22, nHeroY, BImgHero.getWidth() - 58, BImgHero.getHeight());
+            return new Rectangle(positionX + 22, POSITIONY, bImage.getWidth() - 58, bImage.getHeight());
         } else {
-            return new Rectangle(nHeroX + 25, nHeroY, BImgHero.getWidth() - 25, BImgHero.getHeight());
+            return new Rectangle(positionX + 25, POSITIONY, bImage.getWidth() - 25, bImage.getHeight());
         }
     }
 
     public void setX(int x) {
-        nHeroX = x;
+        positionX = x;
     }
 
     public void setRight(boolean b) {
@@ -179,15 +177,15 @@ public class Hero {
 
     public void Restart() {
         nHealth = 100;
-        dx = 0;
+        dX = 0;
         isMoving = false;
     }
 
     public void move() {
-        nHeroX += dx;
+        positionX += dX;
     }
 
-    public void HeroHealth(Graphics g) {
+    public void Health(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         int health = nHealth;
         //Allows you to block attacks and if you're blocking the opposite way you'll get hurt
@@ -247,7 +245,7 @@ public class Hero {
         }
         isHitRight = isHitLeft = isHit = isBeam = isBlast = false;
         recHealth = new Rectangle(50, 15, nHealth, 20);
-        g.drawImage(BImgHeroPortriat, 0, 0, null);
+        g.drawImage(portrait, 0, 0, null);
         g.setColor(Color.red);
         g2.fill(recHealth);
         g.setColor(Color.black);
@@ -275,13 +273,13 @@ public class Hero {
 
     //This pushes back the hero when certain enemies do certain attacks.
     private void Push() {
-        if (isPush && nHeroX > 910) {
-            nHeroX -= 1;
+        if (isPush && positionX > 910) {
+            positionX -= 1;
         } else {
             isPush = false;
         }
-        if (isPush2 && nHeroX > 620) {
-            nHeroX -= 1;
+        if (isPush2 && positionX > 620) {
+            positionX -= 1;
         } else {
             isPush2 = false;
         }
@@ -292,27 +290,27 @@ public class Hero {
         if (!isAction) {
             switch (s) {
                 case "left":
-                    dx = -1;
-                    if (nHeroX < -10) {
-                        dx = 0;
+                    dX = -1;
+                    if (positionX < -10) {
+                        dX = 0;
                     }
                     isRight = false;
                     isMoving = true;
                     break;
                 case "right":
-                    dx = 1;
-                    if (nHeroX > 1200) {
-                        dx = 0;
+                    dX = 1;
+                    if (positionX > 1200) {
+                        dX = 0;
                     }
                     isRight = true;
                     isMoving = true;
                     break;
                 case "C": {
                     long timeNow = System.currentTimeMillis();
-                    if (timeNow - lastBlockTime < CDelay) {
+                    if (timeNow - lastBlockTime < CDELAY) {
                         return;
                     }
-                    dx = 0;
+                    dX = 0;
                     isAction = true;
                     isMoving = false;
                     isBlock = true;
@@ -322,7 +320,7 @@ public class Hero {
                 }
                 case "X": {
                     long timeNow = System.currentTimeMillis();
-                    if (timeNow - lastAtkTime < XDelay) {
+                    if (timeNow - lastAtkTime < XDELAY) {
                         return;
                     }
                     try {
@@ -332,7 +330,7 @@ public class Hero {
                         clipWeak.start();
                     } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
                     }
-                    dx = 0;
+                    dX = 0;
                     isAction = true;
                     isMoving = false;
                     isWeak = true;
@@ -342,7 +340,7 @@ public class Hero {
                 }
                 case "Z": {
                     long timeNow = System.currentTimeMillis();
-                    if (timeNow - lastAtkTime < ZDelay) {
+                    if (timeNow - lastAtkTime < ZDELAY) {
                         return;
                     }
                     try {
@@ -352,7 +350,7 @@ public class Hero {
                         clipStrong.start();
                     } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
                     }
-                    dx = 0;
+                    dX = 0;
                     isAction = true;
                     isMoving = false;
                     isStrong = true;
@@ -381,7 +379,7 @@ public class Hero {
 
     public void keyReleased(String s) {
         if (s.equals("rlright") || s.equals("rlleft") && !isAction) {
-            dx = 0;
+            dX = 0;
             isMoving = false;
             nState = nImage = 1;
         } else if (s.equals("rlC") && !isWeak && !isStrong) {

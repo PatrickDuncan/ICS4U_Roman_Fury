@@ -20,29 +20,29 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.KeyStroke;
-//This is the main panel of the game
 
+//This is the main panel of the game
 public final class PanGame extends JPanel implements Runnable {
 
-    private int nSunX, nSunY, nChange = 0, d, c, nCloud1 = 230, nCloud2 = 400,
-            nCloud3 = 650, nCloud4 = 1045;
+    private int sunPosX, sunPosY, levelNum = 0, counter1, counter2, cloudNum1 = 230, 
+            cloudNum2 = 400, cloudNum3 = 650, cloudNum4 = 1045;
     private BufferedImage background;
     private final BufferedImage sun, cloud, pause;
     private final Hero hero;
     private final Sorcerer1 sor1;
     private final Sorcerer2 sor2;
-    private final Fireball1 fireball1;
-    private final Fireball2 fireball2;
+    private final Fireball1 fire1;
+    private final Fireball2 fire2;
     private final Knight knight;
     private final Boss boss;
-    private boolean isCol1, isCol2, isCol, isSorcerer = true, isKnight, isBoss;
+    private boolean isCol, isCol1, isCol2, isSorcerer = true, isKnight, isBoss;
     private final Main main = new Main();
-    private final int DELAY = 9;
+    private final int DELTA = 9;
     private Thread thread;
     private Clip clipBreach;
     private AudioInputStream AISBreach, AISFireball, AISShield;
-    @SuppressWarnings("FieldMayBeFinal")
-    private long before = 0, delay = 480;
+    private long before = 0;
+    private final long DELAY = 480;
 
     public PanGame() throws Exception {
         //KeyBindings: http://stackoverflow.com/questions/15753551/java-keybindings-how-does-it-work
@@ -60,8 +60,8 @@ public final class PanGame extends JPanel implements Runnable {
         hero = new Hero();
         sor1 = new Sorcerer1();
         sor2 = new Sorcerer2();
-        fireball1 = new Fireball1();
-        fireball2 = new Fireball2();
+        fire1 = new Fireball1();
+        fire2 = new Fireball2();
         knight = new Knight();
         boss = new Boss();
     }
@@ -116,11 +116,11 @@ public final class PanGame extends JPanel implements Runnable {
                     }
                     hero.move();
                 }
-                if (fireball1.isVisible()) {
-                    fireball1.move();
+                if (fire1.isVisible()) {
+                    fire1.move();
                 }
-                if (fireball2.isVisible()) {
-                    fireball2.move();
+                if (fire2.isVisible()) {
+                    fire2.move();
                 }
                 if (!isBoss) {
                     clipBreach.close();
@@ -128,7 +128,7 @@ public final class PanGame extends JPanel implements Runnable {
             }
             repaint();
             timeDiff = System.currentTimeMillis() - beforeTime;
-            sleep = DELAY - timeDiff;
+            sleep = DELTA - timeDiff;
             if (sleep < 0) {
                 sleep = 9;
             }
@@ -151,40 +151,40 @@ public final class PanGame extends JPanel implements Runnable {
             return;
         }
         g.drawImage(background, 0, 0, null);
-        hero.HeroHealth(g);
-        g.drawImage(sun, nSunX, nSunY, null);
+        hero.Health(g);
+        g.drawImage(sun, sunPosX, sunPosY, null);
         if (hero.getHealth() <= 0) {
             clipBreach.close();
         }
         g.drawImage(hero.getImage(), hero.getX(), hero.getY(), this);
         //Loads the sorcerer level
         if (isSorcerer) {
-            int[] nCloudX = {nCloud1, nCloud2, nCloud3, nCloud4};
+            int[] nCloudX = {cloudNum1, cloudNum2, cloudNum3, cloudNum4};
             int[] nCloudY = {40, 85, 5, 165};
             for (int i = 0; i < nCloudX.length; i++) {
                 g.drawImage(cloud, nCloudX[i], nCloudY[i], null);
             }
-            nSunX = 1068;
-            nSunY = 55;
+            sunPosX = 1068;
+            sunPosY = 55;
             if (sor1.getHealth() > 0) {
-                sor1.Sor1Health(g);
+                sor1.Health(g);
                 g.drawImage(sor1.getImage(), sor1.getX(), sor1.getY(), this);
             }
             if (sor2.getHealth() > 0) {
-                sor2.Sor2Health(g);
+                sor2.Health(g);
                 g.drawImage(sor2.getImage(), sor2.getX(), sor2.getY(), this);
             }
             if (sor1.getAttack()) {
-                fireball1.setVisible(true);
+                fire1.setVisible(true);
             }
-            if (fireball1.isVisible()) {
-                g.drawImage(fireball1.getImage(), fireball1.getX(), fireball1.getY(), this);
+            if (fire1.isVisible()) {
+                g.drawImage(fire1.getImage(), fire1.getX(), fire1.getY(), this);
             }
             if (sor2.getAttack()) {
-                fireball2.setVisible(true);
+                fire2.setVisible(true);
             }
-            if (fireball2.isVisible()) {
-                g.drawImage(fireball2.getImage(), fireball2.getX(), fireball2.getY(), this);
+            if (fire2.isVisible()) {
+                g.drawImage(fire2.getImage(), fire2.getX(), fire2.getY(), this);
             }
             if (sor1.getAttack() || sor2.getAttack()) {
                 try {
@@ -199,14 +199,14 @@ public final class PanGame extends JPanel implements Runnable {
         }
         //Loads the knight level
         if (isKnight) {
-            int[] nCloudX = {nCloud1, nCloud2, nCloud3, nCloud4};
+            int[] nCloudX = {cloudNum1, cloudNum2, cloudNum3, cloudNum4};
             int[] nCloudY = {40, 85, 5, 130};
             for (int i = 0; i < nCloudX.length; i++) {
                 g.drawImage(cloud, nCloudX[i], nCloudY[i], null);
             }
             knight.KnightHealth(g);
-            nSunX = 600;
-            nSunY = 5;
+            sunPosX = 600;
+            sunPosY = 5;
             if (knight.getHealth() > 0) {
                 g.drawImage(knight.getImage(), knight.getX(), knight.getY(), this);
             }
@@ -214,7 +214,7 @@ public final class PanGame extends JPanel implements Runnable {
         }
         //Loads the boss level
         if (isBoss) {
-            int[] nCloudX = {nCloud1, nCloud2, nCloud3, nCloud4};
+            int[] nCloudX = {cloudNum1, cloudNum2, cloudNum3, cloudNum4};
             int[] nCloudY = {40, 85, 2, 130};
             for (int i = 0; i < nCloudX.length; i++) {
                 g.drawImage(cloud, nCloudX[i], nCloudY[i], null);
@@ -224,9 +224,9 @@ public final class PanGame extends JPanel implements Runnable {
             } else if (hero.getX() > 700) {
                 boss.Blast();
             }
-            boss.BossHealth(g);
-            nSunX = 50;
-            nSunY = 100;
+            boss.Health(g);
+            sunPosX = 50;
+            sunPosY = 100;
             if (boss.getHealth() > 0) {
                 g.drawImage(boss.getImage(), boss.getX(), boss.getY(), this);
             }
@@ -239,28 +239,28 @@ public final class PanGame extends JPanel implements Runnable {
 
     //Moves clouds
     public void Clouds() {
-        if (d < 20) {
-            c = 0;
-        } else if (d > 20) {
-            c = 1;
-            d = 0;
-            nCloud1 += c;
-            nCloud2 += c;
-            nCloud3 += c;
-            nCloud4 += c;
+        if (counter1 < 20) {
+            counter2 = 0;
+        } else if (counter1 > 20) {
+            counter2 = 1;
+            counter1 = 0;
+            cloudNum1 += counter2;
+            cloudNum2 += counter2;
+            cloudNum3 += counter2;
+            cloudNum4 += counter2;
         }
-        d++;
-        if (nCloud1 > 1280) {
-            nCloud1 = -120;
+        counter1++;
+        if (cloudNum1 > 1280) {
+            cloudNum1 = -120;
         }
-        if (nCloud2 > 1280) {
-            nCloud2 = -120;
+        if (cloudNum2 > 1280) {
+            cloudNum2 = -120;
         }
-        if (nCloud3 > 1280) {
-            nCloud3 = -120;
+        if (cloudNum3 > 1280) {
+            cloudNum3 = -120;
         }
-        if (nCloud4 > 1280) {
-            nCloud4 = -120;
+        if (cloudNum4 > 1280) {
+            cloudNum4 = -120;
         }
     }
 
@@ -277,8 +277,8 @@ public final class PanGame extends JPanel implements Runnable {
         sor2.setChange();
         knight.Restart();
         boss.Restart();
-        fireball1.Restart();
-        fireball2.Restart();
+        fire1.Restart();
+        fire2.Restart();
         isSorcerer = true;
         isKnight = isBoss = isCol1 = isCol2 = isCol = false;
         try {
@@ -286,11 +286,11 @@ public final class PanGame extends JPanel implements Runnable {
         } catch (IOException e) {
             System.out.println("IOException!");
         }
-        nCloud1 = 230;
-        nCloud2 = 400;
-        nCloud3 = 650;
-        nCloud4 = 1045;
-        nChange = 0;
+        cloudNum1 = 230;
+        cloudNum2 = 400;
+        cloudNum3 = 650;
+        cloudNum4 = 1045;
+        levelNum = 0;
     }
 
     public void ReBreach() {
@@ -305,19 +305,19 @@ public final class PanGame extends JPanel implements Runnable {
 
     //http://zetcode.com/tutorials/javagamestutorial/collision/
     public void checkCollisionsSor() {
-        Rectangle RecHero = hero.getBounds(), RecFireball1 = fireball1.getBounds(),
-                RecFireball2 = fireball2.getBounds(), RecSor1 = sor1.getBounds(),
+        Rectangle RecHero = hero.getBounds(), RecFireball1 = fire1.getBounds(),
+                RecFireball2 = fire2.getBounds(), RecSor1 = sor1.getBounds(),
                 RecSor2 = sor2.getBounds();
         //checks collision of fireballs and hero
-        if (fireball1.isVisible() && RecHero.intersects(RecFireball1)) {
-            fireball1.setVisible(false);
-            fireball1.setX(1120);
+        if (fire1.isVisible() && RecHero.intersects(RecFireball1)) {
+            fire1.setVisible(false);
+            fire1.setX(1120);
             hero.setHitRight(true);
             sor1.setAttack(1100);
         }
-        if (fireball2.isVisible() && RecHero.intersects(RecFireball2)) {
-            fireball2.setVisible(false);
-            fireball2.setX(115);
+        if (fire2.isVisible() && RecHero.intersects(RecFireball2)) {
+            fire2.setVisible(false);
+            fire2.setX(115);
             hero.setHitLeft(true);
             sor2.setAttack(1100);
         }
@@ -357,7 +357,7 @@ public final class PanGame extends JPanel implements Runnable {
             isCol2 = false;
         }
         //Switch to kngiht level
-        if (sor1.getHealth() <= 0 && sor2.getHealth() <= 0 && nChange == 0) {
+        if (sor1.getHealth() <= 0 && sor2.getHealth() <= 0 && levelNum == 0) {
             isSorcerer = false;
             isKnight = true;
             try {
@@ -365,15 +365,15 @@ public final class PanGame extends JPanel implements Runnable {
             } catch (IOException e) {
                 System.out.println("IOException!");
             }
-            nChange++;
+            levelNum++;
             hero.setX(300);
             hero.setRight(true);
             hero.setState(1);
             isCol1 = isCol2 = false;
-            nCloud1 = 450;
-            nCloud2 = 1000;
-            nCloud3 = 200;
-            nCloud4 = 400;
+            cloudNum1 = 450;
+            cloudNum2 = 1000;
+            cloudNum3 = 200;
+            cloudNum4 = 400;
         }
     }
 
@@ -393,7 +393,7 @@ public final class PanGame extends JPanel implements Runnable {
                 if (hero.getWeak() || hero.getStrong() && knight.getBlock()) {
                     try {
                         long now = System.currentTimeMillis();
-                        if (now - before > delay) {
+                        if (now - before > DELAY) {
                             Clip clipShield = AudioSystem.getClip();
                             AISShield = AudioSystem.getAudioInputStream(getClass().getResource("/Shield.wav"));
                             clipShield.open(AISShield);
@@ -415,7 +415,7 @@ public final class PanGame extends JPanel implements Runnable {
             isCol = false;
         }
         //Switch to boss level
-        if (knight.getHealth() <= 0 && nChange == 1) {
+        if (knight.getHealth() <= 0 && levelNum == 1) {
             isKnight = false;
             isBoss = true;
             try {
@@ -424,15 +424,15 @@ public final class PanGame extends JPanel implements Runnable {
             } catch (IOException e) {
                 System.out.println("Exception!");
             }
-            nChange++;
+            levelNum++;
             hero.setX(50);
             hero.setRight(true);
             hero.setState(1);
             isCol = false;
-            nCloud1 = 700;
-            nCloud2 = 720;
-            nCloud3 = 1100;
-            nCloud4 = 100;
+            cloudNum1 = 700;
+            cloudNum2 = 720;
+            cloudNum3 = 1100;
+            cloudNum4 = 100;
         }
     }
 

@@ -18,57 +18,57 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 //This class loads all of the attributes for the knight
 public class Knight {
 
-    private final int nKnightX, nKnightY;
-    private int nHealth = 150, nAttack = 500, nBlock, nState = 1, nImage = 1;
+    private final int POSITIONX, POSITIONY;
+    private int health = 150, attackNum = 500, blockNum, stateNum = 1, imageNum = 1;
     private static boolean isAttack, isHeroAtk, isBlock;
-    private BufferedImage BImgKnight;
-    private final BufferedImage BImgKnightPortrait;
-    private final static BufferedImage[][] arBImgKnight = new BufferedImage[3][3];
+    private BufferedImage bImage;
+    private final BufferedImage portrait;
+    private final static BufferedImage[][] iamgeArray = new BufferedImage[3][3];
     private Rectangle recHealth;
     private final Hero hero;
-    private final static Timer tmrDelay = new Timer();
+    private final static Timer DELAY = new Timer();
     private DelayTask delayTask;
     private AudioInputStream AISAttack;
 
     public Knight() throws Exception {
         hero = new Hero();
-        arBImgKnight[1][1] = ImageIO.read(getClass().getResourceAsStream("/knightleft.png"));
-        arBImgKnight[2][1] = ImageIO.read(getClass().getResourceAsStream("/knightleftattack.png"));
-        arBImgKnight[2][2] = ImageIO.read(getClass().getResourceAsStream("/knightleftblock.png"));
-        BImgKnight = arBImgKnight[nState][nImage];
-        BImgKnightPortrait = ImageIO.read(getClass().getResourceAsStream("/knightportrait.png"));
-        nKnightX = 1000;
-        nKnightY = 451;
+        iamgeArray[1][1] = ImageIO.read(getClass().getResourceAsStream("/knightleft.png"));
+        iamgeArray[2][1] = ImageIO.read(getClass().getResourceAsStream("/knightleftattack.png"));
+        iamgeArray[2][2] = ImageIO.read(getClass().getResourceAsStream("/knightleftblock.png"));
+        bImage = iamgeArray[stateNum][imageNum];
+        portrait = ImageIO.read(getClass().getResourceAsStream("/knightportrait.png"));
+        POSITIONX = 1000;
+        POSITIONY = 451;
     }
 
     public int getX() {
-        return nKnightX;
+        return POSITIONX;
     }
 
     public int getY() {
-        return nKnightY;
+        return POSITIONY;
     }
 
     public int getHealth() {
-        return nHealth;
+        return health;
     }
 
     public int getState() {
-        return nState;
+        return stateNum;
     }
 
     public BufferedImage getImage() {
         Action();
         if (isHeroAtk) {
-            nBlock++;
-            if (nBlock == 30) {
-                nBlock = 0;
+            blockNum++;
+            if (blockNum == 30) {
+                blockNum = 0;
                 isBlock = true;
-                nState = nImage = 2;
+                stateNum = imageNum = 2;
             }
         }
-        BImgKnight = arBImgKnight[nState][nImage];
-        return BImgKnight;
+        bImage = iamgeArray[stateNum][imageNum];
+        return bImage;
     }
 
     public boolean getAttack() {
@@ -80,17 +80,17 @@ public class Knight {
     }
 
     public Rectangle getBounds() {
-        if (nState == 1 && nImage == 1) {
-            return new Rectangle(nKnightX + 50, nKnightY, BImgKnight.getWidth() - 50, BImgKnight.getHeight());
-        } else if (nState == 2 && nImage == 1) {
-            return new Rectangle(nKnightX, nKnightY, BImgKnight.getWidth(), BImgKnight.getHeight());
+        if (stateNum == 1 && imageNum == 1) {
+            return new Rectangle(POSITIONX + 50, POSITIONY, bImage.getWidth() - 50, bImage.getHeight());
+        } else if (stateNum == 2 && imageNum == 1) {
+            return new Rectangle(POSITIONX, POSITIONY, bImage.getWidth(), bImage.getHeight());
         } else {
-            return new Rectangle(nKnightX + 58, nKnightY, BImgKnight.getWidth() - 50, BImgKnight.getHeight());
+            return new Rectangle(POSITIONX + 58, POSITIONY, bImage.getWidth() - 50, bImage.getHeight());
         }
     }
 
     public void setHealth(int health) {
-        nHealth -= health;
+        this.health -= health;
         Block();
     }
 
@@ -99,14 +99,14 @@ public class Knight {
     }
 
     public void Restart() {
-        nHealth = 150;
-        nAttack = 500;
+        health = 150;
+        attackNum = 500;
     }
 
     public void KnightHealth(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g.drawImage(BImgKnightPortrait, 0, 50, null);
-        recHealth = new Rectangle(50, 65, nHealth, 20);
+        g.drawImage(portrait, 0, 50, null);
+        recHealth = new Rectangle(50, 65, health, 20);
         g.setColor(Color.red);
         g2.fill(recHealth);
         g.setColor(Color.black);
@@ -115,13 +115,13 @@ public class Knight {
 
     public void Action() {
         if (hero.getX() > 850) {
-            if (nAttack == 550) {
-                nState = 2;
-                nImage = 1;
+            if (attackNum == 550) {
+                stateNum = 2;
+                imageNum = 1;
                 isAttack = true;
                 delayTask = new DelayTask();
-                tmrDelay.schedule(delayTask, 0, 2500);
-                nAttack = 0;
+                DELAY.schedule(delayTask, 0, 2500);
+                attackNum = 0;
                 try {
                     Clip clipAttack = AudioSystem.getClip();
                     AISAttack = AudioSystem.getAudioInputStream(getClass().getResource("/StrongKnight.wav"));
@@ -130,17 +130,17 @@ public class Knight {
                 } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
                 }
             }
-            nAttack++;
+            attackNum++;
         }
     }
 
     public void Block() {
         isHeroAtk = true;
         delayTask = new DelayTask();
-        tmrDelay.schedule(delayTask, 0, 2500);
+        DELAY.schedule(delayTask, 0, 2500);
     }
 
-    //http://www.javaprogrammingforums.com/java-se-api-tutorials/883-how-use-tmrDelay-java.html
+    //http://www.javaprogrammingforums.com/java-se-api-tutorials/883-how-use-DELAY-java.html
     class DelayTask extends TimerTask {
 
         public int nTimes = 0;
@@ -149,7 +149,7 @@ public class Knight {
         public void run() {
             nTimes++;
             if (nTimes == 2) {
-                nState = nImage = 1;
+                stateNum = imageNum = 1;
                 isAttack = isBlock = isHeroAtk = false;
                 hero.setPush(false);
             }

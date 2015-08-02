@@ -16,58 +16,58 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 //This class loads all of the attributes for the boss
 public class Boss {
 
-    private final int nBossX, nBossY;
-    private int nHealth = 200, nBeam1 = 860, nBeam2 = 0, nState, nImage,
-            nVisible, nDelay, nBlast, n;
+    private final int POSITIONX, POSITIONY;
+    private int health = 200, beamNum1 = 860, beamNum2 = 0, stateNum, imageNum,
+            visibleNum, delayNum, blastNum, counter;
     private static boolean isBeam = true, isGrow = true, isBlast;
-    private BufferedImage BImgBoss;
-    private final BufferedImage BImgBossPortrait;
-    private final static BufferedImage[][] arBImgBoss = new BufferedImage[3][3];
+    private BufferedImage bImage;
+    private final BufferedImage portrait;
+    private final static BufferedImage[][] imageArray = new BufferedImage[3][3];
     public Rectangle recHealth, recBeam;
     private final Hero hero;
     private AudioInputStream AISBeam;
 
     public Boss() throws Exception {
         hero = new Hero();
-        nState = nImage = nVisible = nDelay = 1;
-        arBImgBoss[1][1] = ImageIO.read(getClass().getResourceAsStream("/bossleft.png"));
-        arBImgBoss[2][1] = ImageIO.read(getClass().getResourceAsStream("/bossleftatk1.png"));
-        arBImgBoss[2][2] = ImageIO.read(getClass().getResourceAsStream("/bossleftatk2.png"));
-        BImgBoss = arBImgBoss[nState][nImage];
-        BImgBossPortrait = ImageIO.read(getClass().getResourceAsStream("/bossportrait.png"));
-        nBossX = 770;
-        nBossY = 479;
+        stateNum = imageNum = visibleNum = delayNum = 1;
+        imageArray[1][1] = ImageIO.read(getClass().getResourceAsStream("/bossleft.png"));
+        imageArray[2][1] = ImageIO.read(getClass().getResourceAsStream("/bossleftatk1.png"));
+        imageArray[2][2] = ImageIO.read(getClass().getResourceAsStream("/bossleftatk2.png"));
+        bImage = imageArray[stateNum][imageNum];
+        portrait = ImageIO.read(getClass().getResourceAsStream("/bossportrait.png"));
+        POSITIONX = 770;
+        POSITIONY = 479;
     }
 
     public int getX() {
         if (hero.getX() > 619 && hero.getX() < 700) {
-            nState = nImage = 1;
-            nBlast = 0;
+            stateNum = imageNum = 1;
+            blastNum = 0;
         }
-        return nBossX;
+        return POSITIONX;
     }
 
     public int getY() {
-        return nBossY;
+        return POSITIONY;
     }
 
     public int getHealth() {
-        return nHealth;
+        return health;
     }
 
     public int getDelay() {
-        return nDelay;
+        return delayNum;
     }
 
     public int getVisible() {
-        return nVisible;
+        return visibleNum;
     }
 
     public BufferedImage getImage() {
         try {
             Clip clipBeam = AudioSystem.getClip();
             AISBeam = AudioSystem.getAudioInputStream(getClass().getResource("/Fireball.wav"));
-            if (nBeam2 == 1 && nState == 2 && nImage == 1) {
+            if (beamNum2 == 1 && stateNum == 2 && imageNum == 1) {
                 clipBeam.open(AISBeam);
                 clipBeam.start();
             } else {
@@ -75,17 +75,17 @@ public class Boss {
             }
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
         }
-        if (n != 0) {
-            nState = nImage = 2;
+        if (counter != 0) {
+            stateNum = imageNum = 2;
         }
-        if (nState == 2 && nImage == 2) {
-            n++;
-            if (n > 100) {
-                n = 0;
+        if (stateNum == 2 && imageNum == 2) {
+            counter++;
+            if (counter > 100) {
+                counter = 0;
             }
         }
-        BImgBoss = arBImgBoss[nState][nImage];
-        return BImgBoss;
+        bImage = imageArray[stateNum][imageNum];
+        return bImage;
     }
 
     public boolean getBeam() {
@@ -97,17 +97,17 @@ public class Boss {
     }
 
     public Rectangle getBounds() {
-        if (nState == 1 && nImage == 1) {
-            return new Rectangle(nBossX + 40, nBossY, BImgBoss.getWidth(), BImgBoss.getHeight());
-        } else if (nState == 2 && nImage == 1) {
-            return new Rectangle(nBossX + 40, nBossY, BImgBoss.getWidth(), BImgBoss.getHeight());
+        if (stateNum == 1 && imageNum == 1) {
+            return new Rectangle(POSITIONX + 40, POSITIONY, bImage.getWidth(), bImage.getHeight());
+        } else if (stateNum == 2 && imageNum == 1) {
+            return new Rectangle(POSITIONX + 40, POSITIONY, bImage.getWidth(), bImage.getHeight());
         } else {
-            return new Rectangle(nBossX, nBossY, BImgBoss.getWidth(), BImgBoss.getHeight());
+            return new Rectangle(POSITIONX, POSITIONY, bImage.getWidth(), bImage.getHeight());
         }
     }
 
     public void setHealth(int health) {
-        nHealth -= health;
+        this.health -= health;
     }
 
     public void setBeam(boolean beam) {
@@ -123,16 +123,16 @@ public class Boss {
     }
 
     public void Restart() {
-        nHealth = 200;
-        nBeam1 = 860;
-        nBeam2 = 0;
+        health = 200;
+        beamNum1 = 860;
+        beamNum2 = 0;
         isGrow = isBeam = true;
     }
 
-    public void BossHealth(Graphics g) {
+    public void Health(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g.drawImage(BImgBossPortrait, 0, 50, null);
-        recHealth = new Rectangle(50, 65, nHealth, 20);
+        g.drawImage(portrait, 0, 50, null);
+        recHealth = new Rectangle(50, 65, health, 20);
         g.setColor(Color.red);
         g2.fill(recHealth);
         g.setColor(Color.black);
@@ -141,36 +141,36 @@ public class Boss {
 
     public void Beam(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        if (nVisible < 860) {
-            recBeam = new Rectangle(nBeam1, 562, nBeam2, 23);
+        if (visibleNum < 860) {
+            recBeam = new Rectangle(beamNum1, 562, beamNum2, 23);
             g.setColor(Color.yellow);
             g2.fill(recBeam);
             g.setColor(Color.black);
             g2.draw(recBeam);
             if (isGrow) {
-                nBeam1--;
-                nBeam2++;
+                beamNum1--;
+                beamNum2++;
             }
-            nVisible++;
-            nState = 2;
-            nImage = 1;
+            visibleNum++;
+            stateNum = 2;
+            imageNum = 1;
         } else {
-            nDelay++;
-            if (nDelay >= 350) {
-                nVisible = nDelay = 1;
-                nBeam1 = 860;
-                nBeam2 = 1;
+            delayNum++;
+            if (delayNum >= 350) {
+                visibleNum = delayNum = 1;
+                beamNum1 = 860;
+                beamNum2 = 1;
             }
-            nState = nImage = 1;
+            stateNum = imageNum = 1;
             isBeam = false;
         }
     }
 
     public void Blast() {
-        if (nBlast == 300) {
+        if (blastNum == 300) {
             isBlast = true;
-            nState = nImage = 2;
-            nBlast = 0;
+            stateNum = imageNum = 2;
+            blastNum = 0;
             try {
                 Clip clipBeam = AudioSystem.getClip();
                 AISBeam = AudioSystem.getAudioInputStream(getClass().getResource("/Blast.wav"));
@@ -179,8 +179,8 @@ public class Boss {
             } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
             }
         } else {
-            nState = nImage = 1;
+            stateNum = imageNum = 1;
         }
-        nBlast++;
+        blastNum++;
     }
 }

@@ -11,36 +11,36 @@ import javax.imageio.ImageIO;
 //This class loads all the atributes for one of the sorcerers.
 public class Sorcerer1 {
 
-    private final int nSor1X, nSor1Y;
-    private int nAttack = 1299, nHealth = 50, nChange = 0, nState = 1, nImage = 1;
-    private final int nAtkSpeed = 1300;
+    private final int POSITIONX, POSITIONY;
+    private int attackNum = 1299, health = 50, changeNum = 0, stateNum = 1, imageNum = 1;
+    private final int ATTACKSPEED = 1300;
     private static boolean isAttack;
-    private BufferedImage BImgSor1;
-    private final BufferedImage BImgSor1Portrait;
-    private final static BufferedImage[][] arBImgSor = new BufferedImage[3][2];
+    private BufferedImage bImage;
+    private final BufferedImage portrait;
+    private final static BufferedImage[][] arrayImage = new BufferedImage[3][2];
     private Rectangle recHealth;
 
     public Sorcerer1() throws IOException {
-        arBImgSor[1][1] = ImageIO.read(getClass().getResourceAsStream("/sorcerer1.png"));
-        arBImgSor[2][1] = ImageIO.read(getClass().getResourceAsStream("/sorcereratk1.png"));
-        BImgSor1 = arBImgSor[nState][nImage];
-        BImgSor1Portrait = ImageIO.read(getClass().getResourceAsStream("/sorcerer1portrait.png"));
-        nSor1X = 1140;
-        nSor1Y = 508;
+        arrayImage[1][1] = ImageIO.read(getClass().getResourceAsStream("/sorcerer1.png"));
+        arrayImage[2][1] = ImageIO.read(getClass().getResourceAsStream("/sorcereratk1.png"));
+        bImage = arrayImage[stateNum][imageNum];
+        portrait = ImageIO.read(getClass().getResourceAsStream("/sorcerer1portrait.png"));
+        POSITIONX = 1140;
+        POSITIONY = 508;
     }
 
     public int getX() {
-        return nSor1X;
+        return POSITIONX;
     }
 
     public int getY() {
-        return nSor1Y;
+        return POSITIONY;
     }
 
     public BufferedImage getImage() {
         Attack();
-        BImgSor1 = arBImgSor[nState][nImage];
-        return BImgSor1;
+        bImage = arrayImage[stateNum][imageNum];
+        return bImage;
     }
 
     public boolean getAttack() {
@@ -48,29 +48,29 @@ public class Sorcerer1 {
     }
 
     public int getHealth() {
-        return nHealth;
+        return health;
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(nSor1X + 15, nSor1Y, BImgSor1.getWidth() - 10, BImgSor1.getHeight());
+        return new Rectangle(POSITIONX + 15, POSITIONY, bImage.getWidth() - 10, bImage.getHeight());
     }
 
     public void setHealth(int health) {
-        nHealth -= health;
+        this.health -= health;
     }
     
     public void setAttack(int num) {
-        nAttack = num;
+        attackNum = num;
     }
     
     public void setChange() {
-        nChange = 0;
+        changeNum = 0;
     }
 
-    public void Sor1Health(Graphics g) {
+    public void Health(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g.drawImage(BImgSor1Portrait, 0, 50, null);
-        recHealth = new Rectangle(50, 65, nHealth, 20);
+        g.drawImage(portrait, 0, 50, null);
+        recHealth = new Rectangle(50, 65, health, 20);
         g.setColor(Color.red);
         g2.fill(recHealth);
         g.setColor(Color.black);
@@ -78,25 +78,25 @@ public class Sorcerer1 {
     }
 
     public void Attack() {
-        nAttack++;
+        attackNum++;
         isAttack = false;
-        if (nAttack > (int) (Math.random() * nAtkSpeed * 2 + nAtkSpeed)) {
-            nState = 2;
-            nImage = 1;
+        if (attackNum > (int) (Math.random() * ATTACKSPEED * 2 + ATTACKSPEED)) {
+            stateNum = 2;
+            imageNum = 1;
             isAttack = true;
-            nAttack = 0;
+            attackNum = 0;
         }
-        if (nChange == 150) {
-            nState = nImage = 1;
-            nChange = 0;
+        if (changeNum == 150) {
+            stateNum = imageNum = 1;
+            changeNum = 0;
         }
-        nChange++;
+        changeNum++;
     }
 
     public void Restart() {
-        nHealth = 50;
-        nChange = 0;
-        nState = nImage = 1;
+        health = 50;
+        changeNum = 0;
+        stateNum = imageNum = 1;
         isAttack = false;
     }
 }

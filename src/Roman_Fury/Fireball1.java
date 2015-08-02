@@ -8,43 +8,43 @@ import javax.imageio.ImageIO;
 //This class loads all of the attributes for one of the fireballs
 public class Fireball1 {
 
-    private int nFireball1X;
-    private final int nFireball1Y;
-    private final BufferedImage BImgFireball1;
-    private boolean visible = false;
+    private int positionX;
+    private final int POSITIONY;
+    private final BufferedImage bImage;
+    private boolean visible;
 
     public Fireball1() throws IOException {
-        BImgFireball1 = ImageIO.read(getClass().getResourceAsStream("/fireball1.png"));
-        nFireball1X = 1120;
-        nFireball1Y = 565;
+        bImage = ImageIO.read(getClass().getResourceAsStream("/fireball1.png"));
+        positionX = 1120;
+        POSITIONY = 565;
     }
 
     public int getX() {
-        return nFireball1X;
+        return positionX;
     }
 
     public int getY() {
-        return nFireball1Y;
+        return POSITIONY;
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(nFireball1X, nFireball1Y, BImgFireball1.getWidth(), BImgFireball1.getHeight());
+        return new Rectangle(positionX, POSITIONY, bImage.getWidth(), bImage.getHeight());
     }
 
     public BufferedImage getImage() {
-        if (nFireball1X < -30 || nFireball1X > 1250) {
+        if (positionX < -30 || positionX > 1250) {
             visible = false;
-            nFireball1X = 1120;
+            positionX = 1120;
         }
-        return BImgFireball1;
+        return bImage;
     }
 
-    public void setVisible(boolean vis) {
-        visible = vis;
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public void setX(int x) {
-        nFireball1X = x;
+        positionX = x;
     }
 
     public boolean isVisible() {
@@ -52,10 +52,10 @@ public class Fireball1 {
     }
 
     public void move() {
-        nFireball1X -= 1;
+        positionX -= 1;
     }
 
     public void Restart() {
-        nFireball1X = 1120;
+        positionX = 1120;
     }
 }

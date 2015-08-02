@@ -4,47 +4,47 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-//This class loads all of the attributes for the second fireball
 
+//This class loads all of the attributes for the second fireball
 public class Fireball2 {
 
-    private int nFireball2X;
-    private final int nFireball2Y;
-    private final BufferedImage BImgFireball2;
+    private int positionX;
+    private final int POSITIONY;
+    private final BufferedImage bImage;
     private boolean visible;
 
     public Fireball2() throws IOException {
-        BImgFireball2 = ImageIO.read(getClass().getResourceAsStream("/fireball2.png"));
-        nFireball2X = 115;
-        nFireball2Y = 565;
+        bImage = ImageIO.read(getClass().getResourceAsStream("/fireball2.png"));
+        positionX = 115;
+        POSITIONY = 565;
     }
 
     public int getX() {
-        return nFireball2X;
+        return positionX;
     }
 
     public int getY() {
-        return nFireball2Y;
+        return POSITIONY;
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(nFireball2X, nFireball2Y, BImgFireball2.getWidth(), BImgFireball2.getHeight());
+        return new Rectangle(positionX, POSITIONY, bImage.getWidth(), bImage.getHeight());
     }
 
     public BufferedImage getImage() {
-        if (nFireball2X < -30 || nFireball2X > 1250) {
+        if (positionX < -30 || positionX > 1250) {
             visible = false;
-            nFireball2X = 125;
+            positionX = 125;
         }
-        return BImgFireball2;
+        return bImage;
     }
 
-    public void setVisible(boolean vis) {
-        visible = vis;
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public void setX(int x) {
-        nFireball2X = x;
+        positionX = x;
     }
 
     public boolean isVisible() {
@@ -52,10 +52,10 @@ public class Fireball2 {
     }
 
     public void move() {
-        nFireball2X += 1;
+        positionX += 1;
     }
 
     public void Restart() {
-        nFireball2X = 115;
+        positionX = 115;
     }
 }
